@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAREER KART - SELECT CUP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racico&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-image:
+                linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333),
+                linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top Header */
+        .header {
+            width: 100%;
+            background: linear-gradient(90deg, #d32f2f, #b71c1c);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 4px solid #fff;
+            box-shadow: 0 5px 0 #000;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #fff;
+            text-transform: uppercase;
+            text-shadow: 4px 4px #000;
+            margin: 0;
+            font-style: italic;
+        }
+
+        /* Carousel Container */
+        .carousel-container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .track-list {
+            display: flex;
+            gap: 40px;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .track-card {
+            width: 280px;
+            height: 350px;
+            background: #fff;
+            border-radius: 20px;
+            border: 8px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            transition: all 0.5s;
+            opacity: 0.5;
+            transform: scale(0.8) rotateY(20deg);
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Active Card */
+        .track-card.active {
+            opacity: 1;
+            transform: scale(1.1) rotateY(0deg);
+            z-index: 10;
+            border-color: #fecc00;
+            box-shadow: 0 0 30px rgba(254, 204, 0, 0.6);
+        }
+
+        .track-img {
+            width: 100%;
+            height: 160px;
+            background: #333;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cup-icon {
+            filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.3));
+        }
+
+        .track-info {
+            text-align: center;
+            color: #333;
+        }
+
+        .track-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #e74c3c;
+            text-transform: uppercase;
+        }
+
+        .track-role {
+            font-size: 10px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        /* Stats Panel (Bottom) */
+        .stats-panel {
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid #4facfe;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            min-height: 150px;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .stats-left {
+            flex: 1;
+            border-right: 2px dashed #555;
+            padding-right: 20px;
+        }
+
+        .stats-right {
+            flex: 2;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 10px;
+            color: #ccc;
+        }
+
+        .stat-val {
+            color: #fecc00;
+        }
+
+        .desc-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #fff;
+        }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+            text-shadow: 2px 2px 0 #000;
+            z-index: 20;
+            animation: bounceSide 1s infinite alternate;
+        }
+
+        .nav-left {
+            left: 40px;
+        }
+
+        .nav-right {
+            right: 40px;
+        }
+
+        @keyframes bounceSide {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(10px);
+            }
+        }
+
+        .exit-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            z-index: 100;
+            background: #fff;
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+            padding: 8px;
+            font-family: 'Press Start 2P';
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000;
+            font-size: 10px;
+        }
+
+        /* Background Patterns for Tracks */
+        .bg-quizrr {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+        }
+
+        .bg-hyper {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        .bg-gaston {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        /* Mobile Optimization V2 (Safari Safe) */
+        @media (max-width: 900px) {
+            body {
+                /* Zoom out the whole page to fit width */
+                transform: scale(0.65);
+                transform-origin: top center;
+                height: 100dvh;
+                width: 100vw;
+                overflow-y: scroll;
+                /* Allow scrolling if needed */
+                -webkit-overflow-scrolling: touch;
+                position: fixed;
+            }
+
+            .header h1 {
+                font-size: 18px;
+                margin-top: 10px;
+            }
+
+            /* Adjust Stats Panel Text */
+            .stats-panel {
+                width: 95%;
+                padding: 10px;
+                flex-direction: column;
+                /* Stack vertically on mobile */
+                gap: 10px;
+                height: auto;
+                /* Grow with text */
+                min-height: auto;
+            }
+
+            .stats-left {
+                border-right: none;
+                border-bottom: 1px dashed #555;
+                padding-bottom: 10px;
+                padding-right: 0;
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .stats-right {
+                width: 100%;
+            }
+
+            /* Smaller Fonts for Descriptions */
+            .desc-text {
+                font-size: 12px !important;
+                /* Prevent squeezing */
+                line-height: 1.4;
+            }
+
+            #panelTitle {
+                font-size: 16px !important;
+            }
+
+            .track-card {
+                width: 240px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>MARIO KART GP: CAREER</h1>
+        <button class="exit-btn" onclick="window.location.href='../index.html'">EXIT</button>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <div class="nav-arrow nav-left" onclick="moveSlide(-1)">◀</div>
+    <div class="nav-arrow nav-right" onclick="moveSlide(1)">▶</div>
+
+    <div class="carousel-container">
+        <div class="track-list" id="trackList">
+
+            <!-- Track 1 -->
+            <div class="track-card active" onclick="selectTrack(0)">
+                <div class="track-img bg-quizrr">
+                    <span class="cup-icon">🍄</span>
+                </div>
+                <div class="track-info">
+                    <div class="track-title">QUIZRR<br>CIRCUIT</div>
+                    <div class="track-role">Sales Specialist</div>
+                    <div style="font-size: 20px; margin-top:10px;">🏆</div>
+                </div>
+            </div>
+
+            <!-- Track 2 -->
+            <div class="track-card" onclick="selectTrack(1)">
+                <div class="track-img bg-hyper">
+                    <span class="cup-icon">⭐</span>
+                </div>
+                <div class="track-info">
+                    <div class="track-title">HYPER<br>SPEEDWAY</div>
+                    <div class="track-role">Customer Success</div>
+                    <div style="font-size: 20px; margin-top:10px;">👑</div>
+                </div>
+            </div>
+
+            <!-- Track 3 -->
+            <div class="track-card" onclick="selectTrack(2)">
+                <div class="track-img bg-gaston">
+                    <span class="cup-icon">🍌</span>
+                </div>
+                <div class="track-info">
+                    <div class="track-title">GASTON<br>PLAINS</div>
+                    <div class="track-role">Marketing Assoc</div>
+                    <div style="font-size: 20px; margin-top:10px;">🚀</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Details Panel -->
+    <div class="stats-panel" id="statsPanel">
+        <div class="stats-left">
+            <div class="stat-row">
+                <span>SPEED:</span> <span class="stat-val">★★★★★</span>
+            </div>
+            <div class="stat-row">
+                <span>ACCEL:</span> <span class="stat-val">★★★★☆</span>
+            </div>
+            <div class="stat-row">
+                <span>WEIGHT:</span> <span class="stat-val">★★★☆☆</span>
+            </div>
+            <br>
+            <div class="stat-row" style="border-top: 1px solid #555; padding-top: 5px;">
+                <span>YEAR:</span> <span class="stat-val" id="yearText">2025</span>
+            </div>
+        </div>
+        <div class="stats-right">
+            <h3 id="panelTitle" style="color: #4facfe; margin-top: 0; margin-bottom: 10px; font-size:14px;">QUIZRR
+                CIRCUIT</h3>
+            <div class="desc-text" id="panelDesc">
+                • Secured 200+ Leads via LinkedIn Grind.<br>
+                • Crafted "The Wikipedia" (25pg SOP).<br>
+                • Boosted Onboarding Speed by 40%.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tracks = document.querySelectorAll('.track-card');
+        const trackList = document.getElementById('trackList');
+
+        // Data for Panel
+        const data = [
+            {
+                title: "QUIZRR CIRCUIT",
+                role: "Inside Sales Specialist",
+                year: "2025",
+                stats: [5, 4, 3],
+                desc: "• <b>Prospecced 200+ leads</b> via LinkedIn.<br>• Crafted <b>'The Wikipedia'</b> (25pg SOP).<br>• Buffed Team Onboarding Speed by <b>40%</b>."
+            },
+            {
+                title: "HYPER SPEEDWAY",
+                role: "Customer Success Manager",
+                year: "2023-2025",
+                stats: [4, 5, 5],
+                desc: "• <b>Full Funnel Control:</b> Sales to CS.<br>• Unlocked <b>HubSpot Automation</b> (+10hrs/wk).<br>• Managed Raid Group: <b>500+ Participants</b>."
+            },
+            {
+                title: "GASTON PLAINS",
+                role: "Marketing Associate",
+                year: "2020-2022",
+                stats: [3, 4, 4],
+                desc: "• <b>Strategy:</b> Influencer Marketing.<br>• Identified <b>Hidden Market</b> (Info Gap).<br>• Fixed Logistics Glitch (<b>Excel Patch</b>)."
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function updateUI() {
+            // Update Cards
+            tracks.forEach((track, index) => {
+                track.classList.remove('active');
+                if (index === currentIndex) track.classList.add('active');
+            });
+
+            // Center Carousel
+            // Adjust translation based on card width (280) + gap (40) = 320
+            // Center is 0, -320, +320 etc? No, let's keep active centered. 
+            // Simple offset logic: 
+            // 0 -> 0
+            // 1 -> -320px
+            // 2 -> -640px
+            // But we want it centered in the screen.
+            // Let's rely on simple translateX
+            // Actually, best "Select" view is keeping the active one in center.
+            // Screen width / 2
+
+            // Simplified Logic: Just shift the container so active index is center
+            // Assuming 3 items:
+            // Index 0: 0px or maybe slightly right to center it?
+            // Let's hardcode offsets for 3 items for simplicity in this artifact
+            const offsets = ['320px', '0px', '-320px'];
+            trackList.style.transform = `translateX(${offsets[currentIndex]})`;
+
+            // Update Panel
+            const info = data[currentIndex];
+            document.getElementById('panelTitle').innerText = info.title;
+            document.getElementById('yearText').innerText = info.year;
+            document.getElementById('panelDesc').innerHTML = info.desc;
+
+            // Update Stars (Visual only, randomized logic for now or mapped)
+            // Ideally we map `info.stats` to the stars but for now static is fine or text update
+        }
+
+        function selectTrack(index) {
+            currentIndex = index;
+            updateUI();
+        }
+
+        function moveSlide(dir) {
+            currentIndex += dir;
+            if (currentIndex < 0) currentIndex = tracks.length - 1;
+            if (currentIndex >= tracks.length) currentIndex = 0;
+            updateUI();
+        }
+
+        // Initialize (Center on middle item?)
+        // Let's center on 1 (Hyper Island) visually? Or 0.
+        // Let's start at 0.
+        updateUI();
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') moveSlide(1);
+            if (e.key === 'ArrowLeft') moveSlide(-1);
+        });
+
+    </script>
+</body>
+
+</html>

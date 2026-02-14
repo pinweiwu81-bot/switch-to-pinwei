@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKILL MASTER - BATTLE MODE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #202020;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Press Start 2P', cursive;
+            user-select: none;
+        }
+
+        .game-window {
+            width: 800px;
+            height: 600px;
+            background-color: #f8f8f8;
+            border: 4px solid #d0d0d0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Battle Scene Background */
+        .battle-scene {
+            height: 350px;
+            background: linear-gradient(#80d0ff 0%, #80d0ff 60%, #50a040 60%, #50a040 100%);
+            position: relative;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.2) 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        /* --- LEFT SIDE: OPPONENT (RECRUITER) --- */
+
+        .opponent-base {
+            position: absolute;
+            top: 130px;
+            left: 50px;
+            text-align: center;
+            z-index: 5;
+            transition: transform 0.5s, opacity 0.5s;
+            /* For capture animation */
+        }
+
+        .opponent-sprite {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: bounce 2s infinite;
+        }
+
+        .opponent-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.2));
+        }
+
+        .opponent-hud {
+            background: #f8f8f0;
+            border: 4px solid #404040;
+            border-radius: 10px;
+            padding: 10px;
+            width: 250px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            box-shadow: 4px 4px rgba(0, 0, 0, 0.2);
+            z-index: 6;
+        }
+
+        /* --- RIGHT SIDE: PLAYER (PIN-WEI) --- */
+
+        .player-base {
+            position: absolute;
+            bottom: 150px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .player-sprite {
+            width: 180px;
+            height: 180px;
+            position: relative;
+        }
+
+        .player-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(-5px 5px 0 rgba(0, 0, 0, 0.3));
+        }
+
+        /* HUD Stacked Below Sprite */
+        .player-hud {
+            background: #f8f8f0;
+            border: 4px solid #404040;
+            border-radius: 10px;
+            padding: 10px;
+            width: 260px;
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            box-shadow: 4px 4px rgba(0, 0, 0, 0.2);
+            z-index: 6;
+        }
+
+        /* Bars */
+        .name-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .hp-container {
+            background: #505050;
+            border-radius: 10px;
+            padding: 2px;
+            height: 15px;
+            width: 100%;
+        }
+
+        .hp-bar {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            height: 100%;
+            border-radius: 8px;
+            width: 100%;
+            transition: width 0.5s;
+        }
+
+        .opponent-hp {
+            width: 50%;
+            background: linear-gradient(to right, #f1c40f, #f39c12);
+        }
+
+        /* Dialog / Menu Box */
+        .dialog-box {
+            height: 250px;
+            background: #2a2a2a;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            position: relative;
+        }
+
+        .message-area {
+            flex: 2;
+            background: #fff;
+            border: 4px solid #4a6fa5;
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .action-menu {
+            flex: 1;
+            background: #fff;
+            border: 4px solid #404040;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .menu-btn {
+            background: #fff;
+            border: 2px solid transparent;
+            font-family: 'Press Start 2P';
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            padding: 10px;
+            text-transform: uppercase;
+        }
+
+        .menu-btn:hover {
+            background: #f0f0f0;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        /* Move List (Hidden by default) */
+        .move-list {
+            display: none;
+            grid-template-columns: 1fr;
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 360px;
+            height: 200px;
+            background: white;
+            border: 4px solid #404040;
+            z-index: 30;
+            padding: 10px;
+            box-shadow: -10px -10px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .move-btn {
+            padding: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            border-bottom: 1px dashed #ccc;
+            position: relative;
+        }
+
+        .move-btn:last-child {
+            border: none;
+        }
+
+        .move-btn:hover {
+            background: #eef;
+            color: #005080;
+        }
+
+        .move-btn:hover::before {
+            content: "►";
+            position: absolute;
+            left: 0;
+        }
+
+        .type-tag {
+            float: right;
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: white;
+        }
+
+        .type-tech {
+            background: #3498db;
+        }
+
+        .type-soft {
+            background: #e91e63;
+        }
+
+        .type-lang {
+            background: #9b59b6;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
+
+        /* POKEBALL CSS */
+        .pokeball {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 4px solid #333;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 50;
+            display: none;
+            /* Hidden by default */
+            /* CSS Pokeball Design */
+            background: linear-gradient(to bottom, #e74c3c 48%, #333 48%, #333 52%, #fff 52%);
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .pokeball::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 3px solid #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes throwBall {
+            0% {
+                bottom: 150px;
+                right: 80px;
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                bottom: 250px;
+                right: 400px;
+                transform: scale(1.2) rotate(360deg);
+            }
+
+            100% {
+                bottom: 150px;
+                right: 600px;
+                transform: scale(1) rotate(720deg);
+            }
+
+            /* Lands on opponent */
+        }
+
+        @keyframes ballShake {
+            0% {
+                transform: translate(-50%, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(-50%, 0) rotate(-15deg);
+            }
+
+            50% {
+                transform: translate(-50%, 0) rotate(0deg);
+            }
+
+            75% {
+                transform: translate(-50%, 0) rotate(15deg);
+            }
+
+            100% {
+                transform: translate(-50%, 0) rotate(0deg);
+            }
+        }
+
+        .exit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: #ff3c28;
+            color: white;
+            border: 2px solid white;
+            padding: 10px;
+            font-family: 'Press Start 2P';
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #900;
+        }
+
+        /* Mobile Optimization V2 (Safari Safe) */
+        @media (max-width: 900px) {
+            body {
+                height: 100dvh;
+                width: 100vw;
+                overflow: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                padding-top: 5vh;
+            }
+
+            .game-window {
+                /* Scale down to fit 360px wide screens */
+                transform: scale(0.42);
+                transform-origin: top center;
+                box-shadow: none;
+                border: 2px solid #ccc;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="exit-btn" onclick="window.location.href='../index.html'">EXIT</button>
+
+    <div class="game-window">
+        <!-- Battle Scene -->
+        <div class="battle-scene">
+
+            <!-- LEFT ZONE: OPPONENT -->
+
+            <div class="opponent-hud">
+                <div class="name-row">
+                    <span>WILD RECRUITER</span>
+                    <span>Lv.50</span>
+                </div>
+                <div class="hp-container">
+                    <div class="hp-bar opponent-hp" id="enemyHp"></div>
+                </div>
+            </div>
+
+            <div class="opponent-base" id="opponentBase">
+                <div class="opponent-sprite" id="enemySprite">
+                    <!-- New Recruiter Asset -->
+                    <img src="../assets/images/skills_recruiter.png" alt="Recruiter" class="opponent-img"
+                        onerror="this.src='../assets/images/skills_avatar.png'">
+                </div>
+            </div>
+
+            <!-- THE POKEBALL (Hidden initially) -->
+            <div class="pokeball" id="pokeball"></div>
+
+            <!-- RIGHT ZONE: PLAYER -->
+
+            <!-- HUD Stacked Below Sprite -->
+            <div class="player-hud">
+                <div class="name-row">
+                    <span>PIN-WEI</span>
+                    <span>Lv.26</span>
+                </div>
+                <div class="hp-container">
+                    <div class="hp-bar" style="width: 100%"></div>
+                </div>
+                <div style="font-size: 10px; margin-top: 5px; text-align: right;">125/125 HP</div>
+            </div>
+
+            <!-- Player Sprite -->
+            <div class="player-base">
+                <div class="player-sprite">
+                    <img src="../assets/images/skills_avatar.png" alt="Player" class="player-img">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Dialog Box -->
+        <div class="dialog-box">
+            <div class="message-area" id="messageText" onclick="advanceText()">
+                A wild RECRUITER appeared! <br><br>
+                What will PIN-WEI do?
+            </div>
+
+            <!-- Main Menu -->
+            <div class="action-menu" id="actionMenu">
+                <button class="menu-btn" onclick="openMoves()">FIGHT</button>
+                <button class="menu-btn" onclick="showBag()">BAG</button>
+                <button class="menu-btn" onclick="showPokemon()">PKMN</button>
+                <button class="menu-btn" onclick="attemptRun()">RUN</button>
+            </div>
+        </div>
+
+        <!-- Move List (Sub Menu) -->
+        <div class="move-list" id="moveMenu">
+            <div class="move-btn" onclick="useMove('Excel VLOOKUP', 'TECH')">
+                EXCEL VLOOKUP
+                <span class="type-tag type-tech">TECH</span>
+            </div>
+            <div class="move-btn" onclick="useMove('HubSpot Auto', 'TECH')">
+                HUBSPOT AUTO
+                <span class="type-tag type-tech">TECH</span>
+            </div>
+            <div class="move-btn" onclick="useMove('Resilience', 'SOFT')">
+                RESILIENCE
+                <span class="type-tag type-soft">SOFT</span>
+            </div>
+            <div class="move-btn" onclick="useMove('Vibe Coding', 'TECH')">
+                VIBE CODING
+                <span class="type-tag type-lang">AI</span>
+            </div>
+            <div class="move-btn" style="text-align: center; color: #555;" onclick="closeMoves()">
+                CANCEL
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const messageEl = document.getElementById('messageText');
+        const enemyEl = document.getElementById('enemySprite');
+        const enemyBase = document.getElementById('opponentBase');
+        const enemyHpEl = document.getElementById('enemyHp');
+        const pokeball = document.getElementById('pokeball');
+
+        // Sounds (Optional placeholders)
+        // const audioCapture = new Audio('capture.mp3');
+
+        function typeText(text) {
+            messageEl.innerHTML = text;
+        }
+
+        function openMoves() {
+            document.getElementById('moveMenu').style.display = 'grid';
+        }
+
+        function closeMoves() {
+            document.getElementById('moveMenu').style.display = 'none';
+        }
+
+        function showBag() {
+            typeText("You checked your BAG... <br>It contains a PORTFOLIO PDF and some SNACKS!");
+        }
+
+        function showPokemon() {
+            typeText("You don't have POKEMON... <br>You have PAST PROJECTS!");
+        }
+
+        function attemptRun() {
+            typeText("Can't escape! <br>This is a great career opportunity!");
+        }
+
+        function useMove(moveName, type) {
+            closeMoves();
+
+            // 1. Attack Message
+            typeText(`PIN-WEI used ${moveName}!`);
+
+            // 2. Animation Delay
+            setTimeout(() => {
+                // Shake Enemy
+                enemyEl.classList.add('shake');
+                setTimeout(() => enemyEl.classList.remove('shake'), 500);
+
+                // Effectiveness
+                let effectiveText = "It's super effective!";
+                if (type === 'SOFT') effectiveText = "The RECRUITER is impressed!";
+
+                typeText(`PIN-WEI used ${moveName}!<br>${effectiveText}`);
+
+                // Reduce HP (Visual)
+                let currentWidth = parseFloat(enemyHpEl.style.width) || 50;
+                let newWidth = Math.max(0, currentWidth - 20);
+                enemyHpEl.style.width = newWidth + '%';
+
+                if (newWidth <= 10) {
+                    // TRIGGER CAPTURE SEQUENCE
+                    setTimeout(() => {
+                        startCapture();
+                    }, 1500);
+                }
+
+            }, 1000);
+        }
+
+        function startCapture() {
+            typeText("RECRUITER is weak! <br>Go! JOB BALL!");
+
+            setTimeout(() => {
+                // 1. Initialize Ball Position (at Player)
+                pokeball.style.display = 'block';
+                pokeball.style.bottom = '150px';
+                pokeball.style.right = '80px';
+
+                // 2. Animate Throw
+                pokeball.style.animation = 'throwBall 1s forwards';
+
+                setTimeout(() => {
+                    // 3. Ball hits Enemy
+                    // Hide Enemy
+                    enemyBase.style.transform = 'scale(0)';
+                    enemyBase.style.opacity = '0';
+
+                    // Reset Ball for Shake (centered on enemy pos approx)
+                    pokeball.style.animation = 'none';
+                    pokeball.style.bottom = '150px'; /* Match enemy base top roughly */
+                    pokeball.style.right = 'auto'; // tricky, let's set left
+                    pokeball.style.left = '125px'; /* 50px offset + half width approx */
+                    pokeball.style.transform = 'translate(-50%, 0)';
+
+                    setTimeout(() => {
+                        // 4. Shake Logic
+                        pokeball.style.animation = 'ballShake 0.5s 3'; // Shake 3 times? CSS iteration count
+
+                        setTimeout(() => {
+                            // 5. Success
+                            pokeball.style.animation = 'none';
+                            pokeball.style.filter = 'brightness(1.2)'; // Light up
+                            typeText("Gotcha! <br>JOB OFFER was caught!");
+
+                            // Stars/Confetti could go here
+
+                        }, 2000);
+
+                    }, 500);
+
+                }, 1000);
+
+            }, 1000);
+        }
+
+        function advanceText() {
+            // Click to advance logic if needed
+        }
+
+    </script>
+</body>
+
+</html>

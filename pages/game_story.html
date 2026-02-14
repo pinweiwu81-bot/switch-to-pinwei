@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Story - Otome Romance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Kosugi Maru', sans-serif;
+            background-color: #2a2a2a;
+            /* Dark letterbox background */
+            color: #4a4a4a;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .visual-novel-container {
+            width: 100%;
+            max-width: 1024px;
+            /* Constrain width */
+            height: 768px;
+            /* Fixed height ratio (4:3ish) */
+            max-height: 90vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            /* Shadow for depth */
+            background-color: #ffe6eb;
+            background-image: url('../assets/images/story_background.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            /* Slight rounding */
+            overflow: hidden;
+        }
+
+        /* Character Sprite (Center Portrait for User Avatar) */
+        .character-sprite {
+            position: absolute;
+            bottom: 250px;
+            /* Positioned above text box */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            /* Portrait size */
+            height: 320px;
+            z-index: 10;
+            filter: drop-shadow(0 0 20px rgba(255, 200, 200, 0.6));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .character-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Cover ensures portrait fills the circle */
+            border-radius: 50%;
+            /* Circular portrait */
+            border: 6px solid #fff;
+            /* White border */
+            box-shadow: 0 0 0 4px #ffb7b2;
+            /* Pink Outline */
+        }
+
+        /* Float Animation */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        /* Dialogue Box (Bottom) */
+        .dialogue-box {
+            position: absolute;
+            bottom: 30px;
+            left: 10%;
+            /* Center more */
+            right: 10%;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #ffb7b2;
+            /* Soft pink border */
+            border-radius: 20px;
+            padding: 20px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        /* Name Tag */
+        .name-tag {
+            position: absolute;
+            top: -25px;
+            left: 30px;
+            background: #ff8fa3;
+            color: white;
+            padding: 5px 25px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid white;
+        }
+
+        .dialogue-text {
+            font-size: 30px;
+            /* User Requested Size */
+            line-height: 1.6;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .next-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            color: #ff8fa3;
+            animation: blink 1s infinite;
+        }
+
+        /* Menu / UI Overlay */
+        .ui-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 30;
+        }
+
+        .ui-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ffb7b2;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #ff8fa3;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ui-btn:hover {
+            background: #ffe6eb;
+            transform: translateY(-2px);
+        }
+
+        /* Effects */
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(white, rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            animation: floatUp 4s linear infinite;
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Optimization V2 (Safari Safe) */
+        @media (max-width: 900px) {
+
+            body,
+            .visual-novel-container {
+                height: 100dvh;
+                /* Safari full height */
+                width: 100vw;
+                overflow: hidden;
+            }
+
+            .visual-novel-container {
+                border-radius: 0;
+            }
+
+            /* Move Character Up */
+            .character-sprite {
+                width: 200px;
+                height: 200px;
+                bottom: 250px;
+                /* Higher up */
+            }
+
+            /* Flexible Text Box */
+            .dialogue-box {
+                bottom: 20px;
+                left: 5%;
+                right: 5%;
+                width: 90%;
+                height: auto;
+                /* Let it grow with text */
+                max-height: 35vh;
+                /* Don't cover face */
+                padding: 15px;
+                overflow-y: auto;
+                /* Scroll if text is huge */
+                box-sizing: border-box;
+            }
+
+            /* Specific Mobile Font Size */
+            .dialogue-text {
+                font-size: 16px !important;
+                /* Force readable size */
+                line-height: 1.4;
+                margin-top: 10px;
+            }
+
+            .name-tag {
+                top: -15px;
+                font-size: 0.9rem;
+                padding: 2px 15px;
+            }
+
+            .ui-buttons {
+                transform: scale(0.7);
+                top: 10px;
+                right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="visual-novel-container">
+        <div class="ui-buttons">
+            <button class="ui-btn">LOG</button>
+            <button class="ui-btn">AUTO</button>
+            <button class="ui-btn" onclick="window.location.href='../index.html'">EXIT</button>
+        </div>
+
+        <!-- Character Sprite -->
+        <div class="character-sprite">
+            <!-- Using the user's custom avatar (story_avatar.png) -->
+            <img src="../assets/images/story_avatar.png" alt="Pin-Wei Character" class="character-image">
+        </div>
+
+        <!-- Dialogue Box -->
+        <div class="dialogue-box" id="textBox">
+            <div class="name-tag">Pin-Wei</div>
+            <div class="dialogue-text" id="textContent">
+                "Oh, hello there! ✨ I didn't expect to see you here..."
+            </div>
+            <div class="next-indicator">▼</div>
+        </div>
+    </div>
+
+    <script>
+        const storyLines = [
+            "Oh, hello there! ✨ I didn't expect to see you here...",
+            "Since you found me, maybe I can tell you a little secret? It's about how I came to Sweden. 🌸",
+            "It started in 2019. I packed my life into two suitcases and flew across the world.",
+            "But fate had other plans... The pandemic hit, and then layover after layover. It was tough.",
+            "But I never gave up! I met so many kind people, shared so much 'Fika', and discovered my passion for building systems.",
+            "Now, I help companies grow and build cool things with AI (like this game!).",
+            "I hope my story inspires you to be resilient too! 💖"
+        ];
+
+        let index = 0;
+        const textBox = document.getElementById('textBox');
+        const textContent = document.getElementById('textContent');
+
+        textBox.addEventListener('click', () => {
+            index = (index + 1) % storyLines.length;
+            textContent.innerText = storyLines[index];
+        });
+
+        // Add Sparkles
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.querySelector('.visual-novel-container').appendChild(sparkle);
+
+            setTimeout(() => { sparkle.remove(); }, 4000);
+        }
+        setInterval(createSparkle, 500);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREDITS - PIN-WEI WU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Starfield Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(1px 1px at 10% 10%, #fff, transparent),
+                radial-gradient(1px 1px at 20% 40%, #fff, transparent),
+                radial-gradient(2px 2px at 50% 50%, #fff, transparent),
+                radial-gradient(1px 1px at 80% 30%, #fff, transparent);
+            background-size: 200px 200px;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .credits-container {
+            width: 100%;
+            max-width: 600px;
+            height: 100vh;
+            position: relative;
+            text-align: center;
+            perspective: 400px;
+        }
+
+        .crawl {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            /* 20s: Comfortable reading speed */
+            animation: scrollCredits 20s linear forwards;
+        }
+
+        @keyframes scrollCredits {
+            0% {
+                top: 100%;
+                transform: rotateX(20deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            /* -120%: Ends shortly after text leaves screen */
+            100% {
+                top: -120%;
+                transform: rotateX(20deg);
+                opacity: 0;
+            }
+        }
+
+        .final-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .final-screen.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        h1 {
+            color: #ffe6eb;
+            font-size: 24px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px #e91e63;
+        }
+
+        h2 {
+            color: #80d0ff;
+            font-size: 16px;
+            margin-top: 40px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 12px;
+            line-height: 2;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .role {
+            color: #f1c40f;
+            font-size: 10px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .contact-box {
+            border: 4px solid #fff;
+            padding: 40px;
+            background: #222;
+            box-shadow: 10px 10px 0 #444;
+            max-width: 80%;
+        }
+
+        .contact-link {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover {
+            color: #2ecc71;
+            border: 2px dashed #2ecc71;
+            transform: scale(1.1);
+        }
+
+        .skip-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 15px 20px;
+            font-family: 'Press Start 2P';
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 4px 4px 0 #000;
+            transition: transform 0.1s;
+        }
+
+        .skip-btn:hover {
+            background: #555;
+            transform: scale(1.05);
+        }
+
+        .exit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: #ff3c28;
+            color: white;
+            border: 2px solid white;
+            padding: 10px;
+            font-family: 'Press Start 2P';
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #900;
+        }
+
+        /* Mobile Optimization V2 (Safari Safe) */
+        @media (max-width: 900px) {
+            body {
+                height: 100dvh;
+                width: 100vw;
+                overflow: hidden;
+            }
+
+            .credits-container {
+                height: 100dvh;
+                perspective: none;
+                /* Flatten for mobile performance */
+            }
+
+            .crawl {
+                font-size: 0.8rem;
+                width: 90%;
+                left: 5%;
+                /* Speed up scroll slightly on mobile or keep same */
+            }
+
+            .final-screen h1 {
+                font-size: 18px;
+            }
+
+            .final-screen p {
+                font-size: 10px;
+            }
+
+            .skip-btn {
+                bottom: 80px;
+                /* Move up to avoid Safari bar */
+                right: 20px;
+                padding: 10px;
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stars"></div>
+    <button class="exit-btn" onclick="window.location.href='../index.html'">EXIT</button>
+
+    <button class="skip-btn" onclick="skipCredits()">SKIP ►</button>
+
+    <div class="credits-container">
+        <div class="crawl" id="crawlText">
+            <h1>CONGRATULATIONS!</h1>
+            <p>You have completed the portfolio run.</p>
+            <br>
+
+            <div class="role">Producer & Developer</div>
+            <div class="name">Pin-Wei Wu</div>
+
+            <div class="role">Creative Director</div>
+            <div class="name">Pin-Wei Wu</div>
+
+            <div class="role">Core Skills</div>
+            <div class="name">
+                Operations Management<br>
+                Customer Success<br>
+                Strategic Growth<br>
+                Cross-Functional Comms
+            </div>
+
+            <div class="role">Powered By</div>
+            <div class="name">Antigravity & Gemini</div>
+
+            <div class="role">Special Thanks</div>
+            <div class="name">
+                All the people who have<br>
+                played this game.
+            </div>
+
+            <br><br><br>
+            <h1>THANK YOU!</h1>
+        </div>
+
+        <div class="final-screen" id="finalScreen">
+            <div class="contact-box">
+                <h1 style="font-size: 20px; color: #ff5555;">GAME OVER...</h1>
+                <p style="font-size: 14px; color: #4ade80;">BUT LIFE CONTINUES!</p>
+                <br>
+
+                <a href="mailto:pinweiwu81@gmail.com" class="contact-link">
+                    📧 pinweiwu81@gmail.com
+                </a>
+
+                <a href="https://linkedin.com/in/pin-wei-wu" target="_blank" rel="noopener noreferrer"
+                    class="contact-link">
+                    💼 LinkedIn: Pin-Wei Wu
+                </a>
+
+                <p style="margin-top:30px; font-size: 8px; color:#666;">PRESS LINK TO START NEW ADVENTURE</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const crawl = document.getElementById('crawlText');
+        const final = document.getElementById('finalScreen');
+        let skipped = false;
+
+        // Listen for the end of the CSS animation
+        crawl.addEventListener('animationend', () => {
+            if (!skipped) {
+                // Wait 3 seconds before showing Game Over
+                setTimeout(showGameOver, 3000);
+            }
+        });
+
+        function skipCredits() {
+            skipped = true;
+            showGameOver();
+        }
+
+        function showGameOver() {
+            // Stop scroll
+            crawl.style.animation = 'none';
+            crawl.style.opacity = '0';
+            crawl.style.display = 'none';
+
+            // Show modal
+            final.classList.add('visible');
+        }
+    </script>
+</body>
+
+</html>

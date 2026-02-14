@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin-Wei Wu | Switch Portfolio</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="switch-container">
+        <!-- Left Joy-Con -->
+        <div class="joy-con left">
+            <div class="joystick"></div>
+            <div class="d-pad">
+                <div class="arrow up"></div>
+                <div class="arrow left"></div>
+                <div class="arrow right"></div>
+                <div class="arrow down"></div>
+            </div>
+            <div class="screenshot-btn"></div>
+        </div>
+
+        <!-- Screen -->
+        <div class="screen-frame">
+            <div class="screen-content">
+                <!-- Top Status Bar -->
+                <div class="status-bar">
+                    <div class="user-profile">
+                        <div class="avatar">P</div>
+                        <span class="username">Pin-Wei</span>
+                    </div>
+                    <div class="system-time" id="clock">12:00 PM</div>
+                    <div class="system-icons">
+                        <span class="wifi-icon">📶</span>
+                        <span class="battery-icon">100% 🔋</span>
+                    </div>
+                </div>
+
+                <!-- Game Library (Horizontal Scroll) -->
+                <div class="game-library" id="gameLibrary">
+
+                    <!-- Game 1: Career Mode -->
+                    <div class="game-item active" data-id="career" tabindex="0">
+                        <div class="game-art art-career">
+                            <div class="art-content">
+                                <span class="game-icon">💼</span>
+                                <span class="game-logo">CAREER<br>MODE</span>
+                            </div>
+                        </div>
+                        <div class="game-title">Work Experience</div>
+                    </div>
+
+                    <!-- Game 2: Skill Master -->
+                    <div class="game-item" data-id="skills" tabindex="0">
+                        <div class="game-art art-skills">
+                            <div class="art-content">
+                                <span class="game-icon">⚡</span>
+                                <span class="game-logo">SKILL<br>MASTER</span>
+                            </div>
+                        </div>
+                        <div class="game-title">Professional Skills</div>
+                    </div>
+
+                    <!-- Game 3: Pin-Wei's Story -->
+                    <div class="game-item" data-id="story" tabindex="0">
+                        <div class="game-art art-story">
+                            <div class="art-content">
+                                <span class="game-icon">🌲</span>
+                                <span class="game-logo">MY<br>STORY</span>
+                            </div>
+                        </div>
+                        <div class="game-title">Personal Journey</div>
+                    </div>
+
+                    <!-- Game 4: Connect -->
+                    <div class="game-item" data-id="connect" tabindex="0">
+                        <div class="game-art art-connect">
+                            <div class="art-content">
+                                <span class="game-icon">📬</span>
+                                <span class="game-logo">CONNECT<br>NOW</span>
+                            </div>
+                        </div>
+                        <div class="game-title">Contact Me</div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Button Hints -->
+                <div class="controls-hint">
+                    <div class="hint"><span class="btn-a">A</span> Start</div>
+                    <div class="hint"><span class="btn-b">B</span> Back</div>
+                    <div class="hint">Select <span class="dpad-icon">✚</span></div>
+                </div>
+
+            </div>
+
+            <!-- Game Content Overlay (Modals) -->
+            <div id="gameModal" class="game-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modalTitle">Game Title</h2>
+                        <button class="close-btn" onclick="closeModal()">✕</button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <!-- Dynamic Content loads here -->
+                    </div>
+                    <div class="modal-footer">
+                        Press <b>B</b> to Exit
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Joy-Con -->
+        <div class="joy-con right">
+            <div class="abxy-buttons">
+                <div class="btn x">X</div>
+                <div class="btn a">A</div>
+                <div class="btn b">B</div>
+                <div class="btn y">Y</div>
+            </div>
+            <div class="joystick"></div>
+            <div class="home-btn"></div>
+        </div>
+    </div>
+
+    <!-- Instructions for User -->
+    <div class="desktop-hint">
+        Use <b>Arrow Keys (⬅️ ➡️)</b> to Navigate, <b>Enter (A)</b> to Select, <b>Esc (B)</b> to Back.
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
